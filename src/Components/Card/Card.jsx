@@ -1,26 +1,22 @@
-import React from "react";
-import { Link } from "react-router-dom";
+import React, { useState } from "react";
+import CardItem from "./CardItem";
 import "./Card.css";
 
 const Card = ({ pokemon, loading, infoPokemon }) => {
-  if (loading) {
-    return <h1>Loading...</h1>;
-  }
+  const [visibleIndex, setVisibleIndex] = useState(0); // Track which image is currently visible
 
-  if (!pokemon || pokemon.length === 0) {
-    return <h2>No Pokémon found</h2>;
-  }
+  if (loading) return <h1>Loading...</h1>;
+  if (!pokemon || pokemon.length === 0) return <h2>No Pokémon found</h2>;
 
-  // Function to get a random background color
   const getRandomColor = () => {
     const colors = [
-      "rgb(204, 191, 114)", // gold
-      "#a2dbb1", // hot pink
-      "#dee7f8", // sky blue
-      "#90EE90", // light green
-      "#fa5151", // light salmon
-      "#FFE4B5", // moccasin
-      "#AFEEEE", // pale turquoise
+      "rgb(204, 191, 114)",
+      "#a2dbb1",
+      "#dee7f8",
+      "#90EE90",
+      "#fa5151",
+      "#FFE4B5",
+      "#AFEEEE",
     ];
     return colors[Math.floor(Math.random() * colors.length)];
   };
@@ -29,21 +25,16 @@ const Card = ({ pokemon, loading, infoPokemon }) => {
     <>
       <h1 style={{ textAlign: "center" }}>My Pokemon App</h1>
       <div className="card-container">
-        {pokemon.map((item) => (
-          <Link to={`/pokemon/${item.id}`} key={item.id}>
-            <div
-              className="card"
-              style={{ backgroundColor: getRandomColor() }}
-              onClick={() => infoPokemon(item)}
-            >
-              <h2>#{item.id}</h2>
-              <img src={item.sprites.front_default} alt={`${item.name}`} />
-              <h2>{item.name}</h2>
-              <p>Height: {item.height}</p>
-              <p>Weight: {item.weight}</p>
-              <p>Species: {item.species?.name || "Unknown"}</p>
-            </div>
-          </Link>
+        {pokemon.map((item, index) => (
+          <CardItem
+            key={item.id}
+            index={index}
+            visibleIndex={visibleIndex}
+            setVisibleIndex={setVisibleIndex}
+            item={item}
+            infoPokemon={infoPokemon}
+            getRandomColor={getRandomColor}
+          />
         ))}
       </div>
     </>
